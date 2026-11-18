@@ -2,6 +2,7 @@ from math import isfinite
 import json
 from .erros import ErroValidacao
 from collections.abc import Mapping
+from datetime import datetime, timezone
 
 def normalizar_valor(valor: object, nome_campo: str) -> int | float | None:
     """Valida apenas campos numéricos (int, float) ou None."""
@@ -44,7 +45,7 @@ def normalizar_payload(payload: Mapping[str, object], metadados: Mapping[str, ob
         observacao = {
             "device_id": metadados["device_id"],
             "received_at": metadados["received_at"],
-            "measured_at": metadados.get("measured_at"), # Pode ser None
+            "measured_at": datetime.now(timezone.utc).isoformat(), # Pode ser None
             "quantity": campo,
             "unit": unidades[campo],
             "value": valor_validado,
@@ -53,9 +54,10 @@ def normalizar_payload(payload: Mapping[str, object], metadados: Mapping[str, ob
             "source_kind": metadados["source_kind"],
             "acquisition_mode": metadados["acquisition_mode"]
         }
-        
+        print("Payload:")
+        print(json.dumps(payload,indent=2))
         print("Metadados:")
-        print(json.dumps(metadados,indent=2))
+        print(json.dumps(observacao,indent=2))
         observacoes.append(observacao)
 
     return observacoes
