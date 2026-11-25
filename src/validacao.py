@@ -26,13 +26,14 @@ def normalizar_payload(payload: Mapping[str, object], metadados: Mapping[str, ob
     for campo in campos_payload:
         if campo not in payload:
             raise ErroValidacao(campo, "campo_em_falta")
-
+    
     # 2. Validar a presença dos campos de texto (Metadados)
     campos_meta = ["device_id", "received_at", "quality", "event_key", "source_kind", "acquisition_mode"]
     for campo in campos_meta:
         if campo not in metadados:
             raise ErroValidacao(campo, "campo_em_falta")
-
+        if mensagem["quantity"] != "indice_demo":
+            raise ErroValidacao("quantity", "grandeza_nao_admitida")
     # 3. Processar e juntar os dados
     unidades = {"temperature": "C", "humidity": "%", "co2": "ppm"}
     observacoes = []
