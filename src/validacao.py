@@ -38,14 +38,14 @@ def normalizar_payload(payload: Mapping[str, object], metadados: Mapping[str, ob
     observacoes = []
 
     for campo in campos_payload:
-        # CORREÇÃO: Só aplicamos normalizar_valor aos números!
+        
         valor_validado = normalizar_valor(payload[campo], campo)
 
         # Juntamos o payload validado com os metadados (strings)
         observacao = {
             "device_id": metadados["device_id"],
             "received_at": metadados["received_at"],
-            "measured_at": datetime.now(timezone.utc).isoformat(), # Pode ser None
+            "measured_at": metadados["measured_at"] or datetime.now(timezone.utc).isoformat(),
             "quantity": campo,
             "unit": unidades[campo],
             "value": valor_validado,
@@ -54,10 +54,7 @@ def normalizar_payload(payload: Mapping[str, object], metadados: Mapping[str, ob
             "source_kind": metadados["source_kind"],
             "acquisition_mode": metadados["acquisition_mode"]
         }
-        print("Payload:")
-        print(json.dumps(payload,indent=2))
-        print("Metadados:")
-        print(json.dumps(observacao,indent=2))
+
         observacoes.append(observacao)
 
     return observacoes

@@ -44,9 +44,7 @@ class ConsumidorMQTT:
                 print("✅ TTN ACEITOU A SUBSCRICAO! A aguardar mensagens...")
 
         def _on_message(self, client, userdata, msg):
-            print("Mensagem recebida")
-            resultado = client.subscribe("#")
-            print(resultado)
+           
             try:
                 # 1. Descodifica o JSON completo do TTN
                 envelope = json.loads(msg.payload.decode('utf-8'))
@@ -78,7 +76,11 @@ class ConsumidorMQTT:
                     "source_kind": "real",
                     "acquisition_mode": "live"
                 }
-    
+                
+                print(f"[MSG] topico={msg.topic}")
+                print(f"  payload   = {json.dumps(payload, indent=2, default=str)}")
+                print(f"  metadados = {json.dumps(metadados, indent=2, default=str)}")
+
                 # 4. Validar tudo (Payload + Metadados)
                 
                 observacoes = normalizar_payload(payload=payload, metadados=metadados)
