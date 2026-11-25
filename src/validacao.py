@@ -32,8 +32,7 @@ def normalizar_payload(payload: Mapping[str, object], metadados: Mapping[str, ob
     for campo in campos_meta:
         if campo not in metadados:
             raise ErroValidacao(campo, "campo_em_falta")
-        if mensagem["quantity"] != "indice_demo":
-            raise ErroValidacao("quantity", "grandeza_nao_admitida")
+       
     # 3. Processar e juntar os dados
     unidades = {"temperature": "C", "humidity": "%", "co2": "ppm"}
     observacoes = []
@@ -41,7 +40,9 @@ def normalizar_payload(payload: Mapping[str, object], metadados: Mapping[str, ob
     for campo in campos_payload:
         
         valor_validado = normalizar_valor(payload[campo], campo)
-
+         qualidade = "missing" if valor is None else "valid"
+        if mensagem["quality"] != qualidade:
+            raise ErroValidacao("quality", "incoerente")
         # Juntamos o payload validado com os metadados (strings)
         observacao = {
             "device_id": metadados["device_id"],
